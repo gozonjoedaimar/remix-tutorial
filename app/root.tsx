@@ -18,11 +18,13 @@ import {
 } from "@remix-run/react";
 
 import appStylesHref from "./app.css";
+import tailwindHref from "./tailwind.css";
 import { createEmptyContact, getContacts } from './data';
 
 export let links: LinksFunction = () => {
   return [
-    { rel: "stylesheet", href: appStylesHref }
+    { rel: "stylesheet", href: appStylesHref },
+    { rel: "stylesheet", href: tailwindHref },
   ];
 };
 

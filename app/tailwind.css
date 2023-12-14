@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#search-form #q {
+    @apply pl-8 pr-2 py-2;
+}
+
+#sidebar form > button {
+    @apply px-4 py-2;
+}
