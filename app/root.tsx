@@ -23,8 +23,8 @@ import { createEmptyContact, getContacts } from './data';
 
 export let links: LinksFunction = () => {
   return [
-    { rel: "stylesheet", href: appStylesHref },
     { rel: "stylesheet", href: tailwindHref },
+    { rel: "stylesheet", href: appStylesHref },
   ];
 };
 
