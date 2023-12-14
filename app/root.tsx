@@ -1,7 +1,8 @@
 import {
   json,
   redirect,
-  LinksFunction
+  LinksFunction,
+  LoaderFunctionArgs
 } from "@remix-run/node";
 
 import {
@@ -20,6 +21,7 @@ import {
 import appStylesHref from "./app.css";
 import tailwindHref from "./tailwind.css";
 import { createEmptyContact, getContacts } from './data';
+import { useEffect } from "react";
 
 export let links: LinksFunction = () => {
   return [
@@ -33,14 +35,24 @@ export const action = async () => {
   return redirect(`/contacts/${contact.id}/edit`);
 };
 
-export let loader = async () => {
-  let contacts = await getContacts();
-  return json({ contacts });
+export let loader = async ({ request }: LoaderFunctionArgs) => {
+  let url = new URL(request.url);
+  let q = url.searchParams.get("q");
+  let contacts = await getContacts(q);
+  return json({ contacts, q });
 };
 
 export default function App() {
   const navigation = useNavigation();
-  const { contacts } = useLoaderData<typeof loader>();
+  const { contacts, q } = useLoaderData<typeof loader>();
+
+  useEffect(() => {
+    const searchField = document.getElementById("q");
+    if (searchField instanceof HTMLInputElement) {
+      searchField.value = q || "";
+    }
+  }, [q]);
+
   return (
     <html lang="en">
       <head>
@@ -56,10 +68,11 @@ export default function App() {
             <Form id="search-form" role="search">
               <input
                 id="q"
+                name="q"
                 aria-label="Search contacts"
+                defaultValue={q || ""}
                 placeholder="Search"
                 type="search"
-                name="q"
               />
               <div id="search-spinner" aria-hidden hidden={true} />
             </Form>
