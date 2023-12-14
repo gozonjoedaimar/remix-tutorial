@@ -48,6 +48,12 @@ export default function App() {
   const { contacts, q } = useLoaderData<typeof loader>();
   const submit = useSubmit();
 
+  const searching =
+    navigation.location &&
+    new URLSearchParams(navigation.location.search).has(
+      "q"
+    );
+
   useEffect(() => {
     const searchField = document.getElementById("q");
     if (searchField instanceof HTMLInputElement) {
@@ -69,7 +75,10 @@ export default function App() {
           <div>
             <Form id="search-form" role="search"
               onChange={ (e) => {
-                submit( e.currentTarget );
+                const isFIrstMatch = q === null;
+                submit( e.currentTarget, {
+                  replace: !isFIrstMatch
+                } );
               }}
             >
               <input
@@ -79,8 +88,9 @@ export default function App() {
                 defaultValue={q || ""}
                 placeholder="Search"
                 type="search"
+                className={searching ? "loading" : ""}
               />
-              <div id="search-spinner" aria-hidden hidden={true} />
+              <div id="search-spinner" aria-hidden hidden={!searching} />
             </Form>
             <Form method="post">
               <button type="submit">New</button>
@@ -124,7 +134,7 @@ export default function App() {
         </div>
         <div
           className={
-            navigation.state === "loading" ? "loading" : ""
+            navigation.state === "loading" && !searching ? "loading" : ""
           }
           id="detail"
         >
